@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import ContactCode from '../components/ContactCode';
 import styles from '../styles/ContactPage.module.css';
+import ContactCode from '../components/ContactCode';
 
 const ContactPage = () => {
   const [name, setName] = useState('');
@@ -10,12 +10,22 @@ const ContactPage = () => {
 
   const submitForm = async (e) => {
     e.preventDefault();
-    console.log(process.env.NEXT_PUBLIC_API_URL);
-    const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/contact`, {
+
+    const formData = new FormData();
+    formData.append('name', name);
+    formData.append('email', email);
+    formData.append('subject', subject);
+    formData.append('message', message);
+
+    const response = await fetch('https://formspree.io/f/xaygwrgb', {
       method: 'POST',
-      body: JSON.stringify({ name, email, subject, message }),
+      body: formData,
+      headers: {
+        'Accept': 'application/json'
+      }
     });
-    if (res.ok) {
+
+    if (response.ok) {
       alert('Your response has been received!');
       setName('');
       setEmail('');
@@ -29,8 +39,8 @@ const ContactPage = () => {
   return (
     <div className={styles.container}>
       <div>
-        <h3 className={styles.heading}>Reach Out Via Socials</h3>
-        <ContactCode />
+        <h3 className={styles.heading}>Connect through Social Media</h3>
+        <ContactCode/ >
       </div>
       <div>
         <h3 className={styles.heading}>Or Fill Out This Form</h3>
@@ -60,7 +70,7 @@ const ContactPage = () => {
             </div>
           </div>
           <div>
-            <label htmlFor="name">Subject</label>
+            <label htmlFor="subject">Subject</label>
             <input
               type="text"
               name="subject"
